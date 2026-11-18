@@ -1,0 +1,45 @@
+EXPORT DU SITE PUBLIÉ — dispo-demo-investisseurs
+
+Site : https://dispo-demo-investisseurs.info979715.chatgpt.site
+Version publiée : 23
+Commit source : 0fcc82b65afb699392a3ec3359a8c52a83c30d18
+Déploiement : appgdep_6af4b5269a708191a2bfc4fe1bd9451a
+Version : appgprj_6ae2079769dc81919ac13ae315b85285~appgver_69f6e5c9565481919e9973b8c83f3731
+Vérifié le 18 novembre 2026.
+
+CONTENU
+Le dossier dist/ contient les 20 fichiers de l'archive de déploiement conservée :
+index.html, entreprises.html, JavaScript, CSS, bibliothèque Leaflet, données
+municipales, photo locale images/cafe-team.jpg et manifeste d'hébergement.
+Les autres fichiers source suivis dans ce commit (tests, configuration et
+ADDRESSCOMPLETE.md) sont également inclus sans modification.
+
+Il n'y a aucune étape de compilation Vite/React : c'est un site statique.
+Le dossier dist/ est à la fois le code du site et le dossier prêt à servir.
+Aucun fichier Flutter et aucune réécriture ne sont inclus.
+
+VÉRIFICATION
+L'historique Sites associe la version 23 à ce commit; son déploiement a le
+statut succeeded et correspond à l'URL ci-dessus. Tous les fichiers applicatifs
+de l'archive locale de déploiement sont identiques octet par octet à ce commit.
+Les sommes SHA-256 du contenu exporté figurent dans EXPORT_SHA256.json.
+La comparaison HTTP directe avec chaque URL n'a pas été possible : le service
+renvoie HTTP 403 à l'outil de téléchargement. Cet export est donc fondé sur le
+commit déclaré par la version déployée et son archive locale, pas sur une
+capture du HTML du navigateur. Les éventuels ajouts internes de la plateforme
+à la réponse HTTP ne sont pas des fichiers de ce projet.
+
+RESSOURCES EXTERNES
+Les polices Google Fonts et les tuiles de carte Esri restent chargées par leurs
+URL originales. Elles ne sont pas des fichiers locaux déployés avec le site et
+ne sont pas téléchargées ni remplacées. Toutes les images présentes dans le
+projet sont incluses. Une connexion Internet reste nécessaire pour ces services.
+
+UTILISATION
+Servir le dossier dist/ avec un serveur statique. Par exemple, si Python est
+installé : python -m http.server 8080 --directory dist
+Puis ouvrir http://localhost:8080
+Cette commande est une suggestion d'utilisation, pas une modification du code.
+
+EXPORT_INFO.txt et EXPORT_SHA256.json sont les seuls fichiers explicatifs
+ajoutés à l'export. Le code et les ressources du site n'ont pas été modifiés.

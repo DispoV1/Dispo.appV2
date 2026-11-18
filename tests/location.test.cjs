@@ -1,0 +1,11 @@
+const vm=require('node:vm'),fs=require('node:fs'),assert=require('node:assert/strict');
+let success,failure;const context=vm.createContext({state:{city:'',radius:30},render(){},tr:(a)=>a,navigator:{geolocation:{getCurrentPosition(ok,no){success=ok;failure=no}}}});
+vm.runInContext(fs.readFileSync('dist/municipalities.js','utf8')+fs.readFileSync('dist/location.js','utf8'),context);
+const run=s=>vm.runInContext(s,context);
+assert.equal(run('qcSorted.length'),1281);assert.equal(run('new Set(qcSorted.map(m=>m.id)).size'),1281);
+assert.equal(run('qcSorted.every(m=>m.point.length===2&&m.point[0]>44&&m.point[0]<63&&m.point[1]<-55&&m.point[1]>-80)'),true);
+assert.ok(Math.abs(run('municipalityDistance([0,0],[0,1])')-111.195)<.01);
+run('locateMunicipality()');failure({code:1});assert.match(run('locationState.message'),/refusée/);assert.equal(run('locationState.id'),'');
+run('locateMunicipality()');success({coords:{latitude:45.886,longitude:-74.159,accuracy:30}});assert.equal(run('state.city'),'Saint-Sauveur');
+run('locateMunicipality()');success({coords:{latitude:0,longitude:0,accuracy:20}});assert.match(run('locationState.message'),/éloignée/);
+console.log('Municipality dataset, distance, permission denial, location suggestion and out-of-range checks passed.');

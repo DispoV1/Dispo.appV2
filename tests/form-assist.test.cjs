@@ -1,0 +1,25 @@
+const vm=require('node:vm'),fs=require('node:fs'),assert=require('node:assert/strict');
+let request, response={Items:[]};
+const ctx=vm.createContext({URL,URLSearchParams,fetch:async(url,options)=>{request={url,options};return {ok:true,json:async()=>response}}});
+vm.runInContext(fs.readFileSync('dist/municipalities.js','utf8')+'\nconst qcSorted=[...QC_MUNICIPALITIES];\n'+fs.readFileSync('dist/form-assist.js','utf8').split('new MutationObserver')[0],ctx);
+const run=s=>vm.runInContext(s,ctx);
+(async()=>{
+assert.equal(run('isCanadaPostQuebec({CountryIso2:"CA",ProvinceCode:"QC"})'),true);
+assert.equal(run('isCanadaPostQuebec({CountryIso3:"CAN",ProvinceName:"Québec"})'),true);
+assert.equal(run('isCanadaPostQuebec({CountryIso2:"CA",ProvinceCode:"ON"})'),false);
+assert.equal(run('isCanadaPostQuebec({CountryIso2:"US",ProvinceCode:"QC"})'),false);
+for(const q of ['sauve','queb','sainte ade'])assert.ok(run(`profileCityMatches(${JSON.stringify(q)}).length`));
+response={Items:[{Id:'container',Next:'Find',Text:'Rue test'}]};
+assert.equal((await run('canadaPostRequest("test-key","Find",{SearchTerm:"111 rue de dav, QC",Country:"CAN"})'))[0].Next,'Find');
+assert.match(request.url.pathname,/Find\/v2.10\/json3.ws/);
+assert.equal(request.url.searchParams.get('Country'),'CAN');
+await run('canadaPostRequest("test-key","Retrieve",{Id:"chosen-id"})');
+assert.match(request.url.pathname,/Retrieve\/v2.11\/json3.ws/);
+assert.equal(request.url.searchParams.get('Id'),'chosen-id');
+response={Items:[{Error:'2',Description:'Unknown key'}]};
+await assert.rejects(run('canadaPostRequest("test-key","Find",{})'));
+response={};await assert.rejects(run('canadaPostRequest("test-key","Find",{})'));
+assert.match(fs.readFileSync('dist/address-config.js','utf8'),/key: ""/);
+assert.ok(!fs.readFileSync('dist/form-assist.js','utf8').includes('photon.komoot.io'));
+console.log('Passed: Canada Post endpoint/parameters/error handling, Quebec validation, local city suggestions, inactive configuration. Live account verification pending.');
+})().catch(e=>{console.error(e);process.exit(1)});
